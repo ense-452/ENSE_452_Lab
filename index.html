@@ -3,23 +3,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My University Course</title>
+    <title>ENSE 452</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>📘 ENSE 452 Lab</h1>
-        <p>Welcome to the lab website. Use the links below to access the lab materials.</p>
-    </header>
-    <main>
+
+<header class="site-header">
+    <div class="logo-container">
+        <img src="uofr-logo.jpg" alt="University of Regina Logo" class="logo">
+    </div>
+    
+    <h1>ENSE 352 Lab</h1>
+    <p class="subtitle">Course Materials & Resources</p>
+</header>
+
+<nav class="main-nav">
+    <ul>
+        <li><a href="lectures/lecture1.html">Lectures</a></li>
+        <li><a href="index.html">Labs</a></li>
+        <li><a href="assignments/assignment1.html">Assignments</a></li>
+        <li><a href="resources.html">Resources</a></li>
+    </ul>
+</nav>
+
+<main class="content">
+    <h2>Welcome to the ENSE 452 Lab</h2>
+    <p>This site hosts lab information for your course.</p>
         <ul class="lab-list">
             <li><a href="GitTutorial/gitTutorial.html">Lab 0: GitHub Tutorial</a></li>
             <li><a href="Lab-1/Blinky.html">Lab 1: Blinky</a></li>
             <li><a href="Lab-2/Cli.html">Lab 2: CLI</a></li>
         </ul>
-    </main>
-    <footer>
-        <p>&copy; 2026 University of Regina</p>
-    </footer>
+    </p>
+</main>
+<footer class="footer">
+    <p>© 2026 ENSE 352 Lab </p>
+</footer>
 </body>
 </html>
+    

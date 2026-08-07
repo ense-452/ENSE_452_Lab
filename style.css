@@ -1,40 +1,78 @@
+/* Colours: Regina Green & Gold */
+:root {
+    --regina-green: #00481d;
+    --regina-gold: #fcbf00;
+    --regina-black: #000;
+    --light-bg: #f8f9fa;
+}
 
 body {
     font-family: Arial, sans-serif;
-    background: #f9f9f9;
-    color: #333;
+    margin: 0;
+    background: var(--light-bg);
+    color: var(--regina-black);
+}
+
+.site-header {
+    background: var(--regina-green);
+    color: white;
+    text-align: left;
+    padding: 30px 20px;
+}
+
+.site-header .logo {
+    max-width: 180px;
+    margin-bottom: 10px;
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+.site-header .subtitle {
+    margin-top: 5px;
+    font-size: 1.2em;
+    font-weight: 300;
+}
+
+.main-nav {
+    background: var(--regina-gold);
+    padding: 10px;
+}
+
+.main-nav ul {
+    list-style: none;
     margin: 0;
     padding: 0;
+    text-align: left;
 }
 
-header {
-    background-color: #02500e;
-    color: white;
-    padding: 20px;
-    text-align: center;
+.main-nav li {
+    display: inline-block;
+    margin: 0 15px;
 }
 
-main {
-    padding: 20px;
-}
-
-.lecture-list {
-    list-style: none;
-    padding: 0;
-}
-
-.lecture-list li {
-    margin: 10px 0;
-}
-
-.lecture-list a {
+.main-nav a {
     text-decoration: none;
-    color: #004080;
+    color: var(--regina-black);
     font-weight: bold;
 }
 
-footer {
-    background-color: #e0e0e0;
+.main-nav a:hover {
+    text-decoration: underline;
+}
+
+.content {
+    padding: 25px 40px;
+    max-width: 1500px;
+    margin: auto;
+}
+
+.footer {
+    background: var(--regina-green);
+    color: white;
     text-align: center;
-    padding: 10px;
+    padding: 15px;
+    margin-top: 40px;
 }
