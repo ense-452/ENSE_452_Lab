@@ -6,14 +6,7 @@
 *.lst
 
 
-#Latex files
-*.gz
-*.pdf
-*.aux
-*.fls
-*.log
-*.fdb_latexmk
-*.out
+
 
 #Mac
 *.DS_Store

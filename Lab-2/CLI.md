@@ -39,9 +39,10 @@ The objective here is to set up a Command-Line Interface (CLI) through which you
 
 First you will be enabling an onboard USART and establishing simple polled serial communication with a terminal program (e.g. Putty, or TeraTerm) running on the host machine.  [If you have a MAC, you can use this link.](https://pbxbook.com/other/mac-tty.html#minicom)
 
-Next, you will design a set of commands and responses such that you can type the commands at your CLI prompt, and expect to see various behaviours on the target board as well as textual responses inside the CLI.  One useful exercise will incorporate LED control into your CLI.
+Next, you will design a set of commands and responses such that you can type the commands at your CLI prompt, and expect to see various behaviours on the target board as well as textual responses inside the CLI.  One useful exercise will incorporate LED control into your CLI. 
 
 At each step of the development, we will be paying attention to good software design principles.
+
 ---
 
 ## Procedure
