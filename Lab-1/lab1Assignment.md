@@ -6,11 +6,7 @@
 On URCourses you will find a link to a GitHub classroom assignment.  Accept this assignemnt and make sure you select your User ID from the list provided so you submit under your username.  You must accept this assignment on your assigned lab day.
 
 ### Phase 1
-Blinky!  (The hello world of embedded)
-
-- Demonstration !!
-- Also create an account on your favorite GIT hosting site (bitbucket or github).  For instance you may name your repository enel452YourName''.  Make sure this repo is private and that you allow the professor, myself and TA's access.
-- Clone your repository and put all your labs in a subdirectory and you can submit all your assignments under an assignments subdirectory.  Projects in this class will also have their own subdirectory.
+- Blinky!  (The hello world of embedded)
 - Start the STM32CubeIDE software and create a new STM32 project.
 - Search and Select our Nucleo-64 board.
 - Initiate all peripherals with their default mode.
