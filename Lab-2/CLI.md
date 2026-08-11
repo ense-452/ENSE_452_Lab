@@ -1,12 +1,38 @@
-## ENSE 452 - Embedded and Real-Time Software Systems - Laboratory
+---
+marp: true
+paginate: true
+title: ENSE 452 Lab 1
+author: Trevor Douglas
+theme: gaia
+style: |
+  section {
+    background: #0B1220;
+    color: #E6EDF3;
+    font-size: 28px;
+    text-align: left;
+  }
 
-# Lab 2: Command Line Interface
+  section:not(.lead) h1 {
+    text-align: center;
+  }
 
-### University of Regina
-### Faculty of Engineering and Applied Science - Software Systems Engineering
+  h1, h2 {
+    color: #7CC7FF;
+  }
 
-### Lab Instructor: [Trevor Douglas](mailto:trevor.douglas@uregina.ca)
+  blockquote {
+    border-left: 6px solid #4DA3FF;
+    color: #DCEBFF;
+  }
+---
+<!-- _class: lead -->
 
+# ENSE 452
+## Embedded and Real-Time Software Systems - Laboratory 2: Command Line Interface
+
+👨‍💻 SSE Lab Instructor: [Trevor Douglas](mailto:trevor.douglas@uregina.ca)
+
+---
 ## Objective
 
 The objective here is to set up a Command-Line Interface (CLI) through which you can communicate with your target board.  Such a tool is extremely useful for unit testing your code, and for automating scripted unit tests.
@@ -16,7 +42,7 @@ First you will be enabling an onboard USART and establishing simple polled seria
 Next, you will design a set of commands and responses such that you can type the commands at your CLI prompt, and expect to see various behaviours on the target board as well as textual responses inside the CLI.  One useful exercise will incorporate LED control into your CLI.
 
 At each step of the development, we will be paying attention to good software design principles.
-
+---
 
 ## Procedure
 
