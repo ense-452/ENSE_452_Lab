@@ -33,53 +33,169 @@ style: |
 👨‍💻 SSE Lab Instructor: [Trevor Douglas](mailto:trevor.douglas@uregina.ca)
 
 ---
-## Objective
+## Separating student code from CubeMX-generated code
 
-The objective here is to set up a Command-Line Interface (CLI) through which you can communicate with your target board.  Such a tool is extremely useful for unit testing your code, and for automating scripted unit tests.
-
-First you will be enabling an onboard USART and establishing simple polled serial communication with a terminal program (e.g. Putty, or TeraTerm) running on the host machine.  [If you have a MAC, you can use this link.](https://pbxbook.com/other/mac-tty.html#minicom)
-
-Next, you will design a set of commands and responses such that you can type the commands at your CLI prompt, and expect to see various behaviours on the target board as well as textual responses inside the CLI.  One useful exercise will incorporate LED control into your CLI. 
-
-At each step of the development, we will be paying attention to good software design principles.
+Polling-based examples—no interrupt callbacks
 
 ---
 
-## Procedure
+## The generated handle is global—but access can remain controlled
 
-### Project Setup
-- Create a new Lab2 subdirectory inside your repository on your local machine.
-- Start the STM32CubeIDE software and create a new STM32 project
-- Search and Select our Nucleo-64 board.
-- Initiate all peripherals with their default mode.
-- Use the graphical tool to enable USART2.  This is the USB connection between the board and the host.  Notice in the schematic that this USART2 connects to the PC through the ST-Link.  This allows us communication between the board and PC.
-- Save the project and generate all the setup code.
+Older CubeMX projects commonly define peripheral handles in `main.c`:
 
-
-### Phase 1: Get the Serial Port Working
-There are a number of ways to communicate with the board via the serial link.  The first way we will investigate is polling mode.  Investigate the following two HAL functions found in 39.2.1 of the HAL document under Polling mode IO operation:
-
-<details>
-
-
-
-```C
-   HAL_UART_Transmit()
-   HAL_UART_Receive()
-
+```c
+/* Private variables -----------------------------------*/
+TIM_HandleTypeDef htim4;
+UART_HandleTypeDef huart2;
 ```
-</details>
 
-Notice that these two routines are Blocking routines. In other words no other code can run until these routines return.  Investigate these routines and come up with a way to communicate between the target and host in efficient manner.  
+- The comment says “Private,” but the variables are not C-private.
+- Without `static`, the linker can expose them through `extern`.
+- The HAL needs persistent handle objects to store configuration and state.
 
-### Phase 2: Implement CLI and various commands
-The CLI should print some sort of prompt.  Blank lines merely repeat the prompt. The user must be able to use the backspace key to correcttyping errors.  All commands must produce some textual output as confirmation the command worked, or an error message if the command was malformed. You should implement commands to do the following:
+> The design goal is not “no globals anywhere.” It is limited, explicit access.
 
-- Turn off or on the LED.
-- Query the state of the LED.
-- "help" should print a screen of help explaining the commands.
+---
 
-The CLI should be in its own files such as cli.c and cli.h.  This section of code should implement the CLI entity.
+## Keep generated ownership and inject dependencies
 
-### What To Submit
-On URCourses put the link to your git repository in the submission link.  The TA will checkout the version (date) submitted at the deadline.  
+```text
+CubeMX-generated main.c
+  owns huart2
+  initializes USART2
+          │
+          │  CLI_Init(&huart2)
+          ▼
+cli.c
+  stores a private pointer
+  calls UART HAL functions
+```
+
+This preserves both goals:
+
+- CubeMX remains responsible for hardware configuration.
+- Students use the real STM32 HAL from their own files.
+
+---
+
+## Organize by purpose—not one wrapper per peripheral
+
+The module is named for what it does:
+
+```text
+cli.h       public CLI interface
+cli.c       input, parsing, output, and HAL UART calls
+main.c      generated setup plus dependency wiring
+```
+
+A CLI uses USART, but it is not a generic `StudentUSART` layer.
+
+```c
+CLI_Init(&huart2);
+CLI_Task();
+```
+
+Students still work directly with `UART_HandleTypeDef`, `HAL_UART_Receive()`,
+and `HAL_UART_Transmit()` inside the CLI implementation.
+
+---
+
+## `cli.h` exposes behavior and the required HAL dependency
+
+```c
+#ifndef CLI_H
+#define CLI_H
+
+#include "stm32f1xx_hal.h"
+
+void CLI_Init(UART_HandleTypeDef *uart);
+void CLI_Task(void);
+
+#endif /* CLI_H */
+```
+
+- The header does not declare `extern UART_HandleTypeDef huart2`.
+- The CLI can use any configured UART supplied by `main.c`.
+- The dependency is visible at initialization time.
+
+---
+
+## `cli.c` keeps its UART pointer private
+
+```c
+#include "cli.h"
+#include <string.h>
+
+static UART_HandleTypeDef *cli_uart = NULL;
+
+void CLI_Init(UART_HandleTypeDef *uart)
+{
+    cli_uart = uart;
+
+    static const char message[] = "\r\nCLI ready\r\n> ";
+    HAL_UART_Transmit(cli_uart, (uint8_t *)message,
+                      sizeof(message) - 1U, 100U);
+}
+```
+
+`cli_uart` has file scope, but `static` prevents other translation units from
+accessing it directly.
+
+---
+## A polling task can receive and echo one character
+
+```c
+void CLI_Task(void)
+{
+    uint8_t ch;
+
+    if (cli_uart == NULL) {
+        return;
+    }
+
+    if (HAL_UART_Receive(cli_uart, &ch, 1U, 10U) == HAL_OK) {
+        HAL_UART_Transmit(cli_uart, &ch, 1U, 100U);
+
+        /* Add line buffering and command parsing here. */
+    }
+}
+```
+
+- The short receive timeout lets the main loop continue running.
+- This introductory design is simple to trace in a debugger.
+- Longer work should be divided across repeated `CLI_Task()` calls.
+
+---
+
+## Wire the module only inside CubeMX user-code blocks
+
+In `main.c`, include the module:
+
+```c
+/* USER CODE BEGIN Includes */
+#include "cli.h"
+/* USER CODE END Includes */
+```
+
+Initialize after CubeMX initializes the USART:
+
+```c
+MX_USART2_UART_Init();
+
+/* USER CODE BEGIN 2 */
+CLI_Init(&huart2);
+/* USER CODE END 2 */
+```
+
+Call it repeatedly from the generated main loop:
+
+```c
+while (1)
+{
+    /* USER CODE BEGIN 3 */
+    CLI_Task();
+    /* USER CODE END 3 */
+}
+```
+
+---
