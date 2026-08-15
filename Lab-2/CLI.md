@@ -188,6 +188,7 @@ CLI_Init(&huart2);
 ```
 
 ---
+
 Call it repeatedly from the generated main loop:
 
 ```c
