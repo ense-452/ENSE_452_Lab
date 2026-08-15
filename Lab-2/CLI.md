@@ -187,6 +187,7 @@ CLI_Init(&huart2);
 /* USER CODE END 2 */
 ```
 
+---
 Call it repeatedly from the generated main loop:
 
 ```c
