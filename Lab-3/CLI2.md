@@ -1,18 +1,82 @@
-## ENSE 452 - Embedded and Real-Time Software Systems - Laboratory
+---
+marp: true
+paginate: true
+title: ENSE 452 Lab 1
+author: Trevor Douglas
+theme: gaia
+style: |
+  section {
+    background: #0B1220;
+    color: #E6EDF3;
+    font-size: 28px;
+    text-align: left;
+  }
 
-# Lab 3: Command Line Interface Part 2
+  section:not(.lead) h1 {
+    text-align: center;
+  }
 
-### University of Regina
-### Faculty of Engineering and Applied Science - Software Systems Engineering
+  h1, h2 {
+    color: #7CC7FF;
+  }
 
-### Lab Instructor: [Trevor Douglas](mailto:trevor.douglas@uregina.ca)
+  blockquote {
+    border-left: 6px solid #4DA3FF;
+    color: #DCEBFF;
+  }
+---
+<!-- _class: lead -->
 
+# ENSE 452
+## Embedded and Real-Time Software Systems - Laboratory 3: More Command Line Interface
+
+👨‍💻 SSE Lab Instructor: [Trevor Douglas](mailto:trevor.douglas@uregina.ca)
+
+---
 ## Objective
 
 The objective here is to improve our Command-Line Interface (CLI) through which you can communicate with your target board. You will abandon the blocking methods used in USART communications and use interrupts. Of course at each step of the development, we will be paying attention to good software design principles.
 
-## Background
+---
+## What are ANSI escape sequences?
+ANSI escape sequences are **in-band terminal commands** embedded in ordinary text.
 
+The terminal interprets them as instructions instead of displaying them verbatim.
+
+They can control:
+
+- Foreground and background colors
+- Bold, underline, inverse, and other styles
+- Cursor position and movement
+- Erasing parts of the screen
+- Saving and restoring terminal state
+
+---
+## The essential prefix
+
+Most sequences in this tutorial begin with the **Control Sequence Introducer**, or CSI:
+
+```text
+ESC [
+```
+
+As bytes:
+
+```text
+0x1B 0x5B
+```
+
+Inside a C string literal:
+
+```c
+"\x1b["
+```
+
+`\x1b` encodes the Escape byte. The following `[` is an ordinary bracket.
+
+---
+
+## How to implement?
 ANSI escape sequences are a standard for in-band signalling to control cursor location, color, font styling, and other options on video text terminals and terminal emulators. Certain sequences of bytes, most starting with an ASCII Escape and bracket character followed by parameters, are embedded into text. The terminal interprets these sequences as commands, rather than text to display verbatim. In order to give these sequences you must give the escape sequence:
 **\x1b[**  or 0x1B and 0x5B
 
@@ -25,6 +89,7 @@ In order to position the cursor use this escape sequence:
 Another good one for this lab is to create a scroll window:
 **\x1b[10;r**
 
+---
 ## Procedure
 - Create a new Lab3 subdirectory inside your repository on your local machine.
 - Start the STM32CubeIDE software and create a new STM32 project.
