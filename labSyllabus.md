@@ -2,7 +2,7 @@
 marp: true
 theme: default
 paginate: true
-title: Introduction to ARM
+title: ENSE 452 Lab Syllabus
 author: Trevor Douglas
 ---
 

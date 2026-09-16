@@ -1,8 +1,16 @@
+---
+marp: true
+theme: default
+paginate: true
+title: Dev Containers
+author: Trevor Douglas
+---
+
 # Dev Container Environment Setup & Distribution Guide
 
 This guide explains how to recreate the development container
 environment (Ubuntu Devel Tools) and how to
-distribute it to students.
+use it.
 
 ------------------------------------------------------------------------
 
@@ -58,7 +66,7 @@ Place it inside `.devcontainer/Dockerfile`.
 
 ------------------------------------------------------------------------
 
-## 🚀 How to Recreate the Container (Instructor or Students)
+## 🚀 How to Recreate the Container in VSCode
 
 1.  **Install VS Code**
 
@@ -76,6 +84,11 @@ Place it inside `.devcontainer/Dockerfile`.
 
 6.  The container builds automatically from the Dockerfile.
 
+------------------------------------------------------------------------
+
+## 🚀 How to Recreate the Container in VSCode
+
+
 7.  After build:
 
     -   Open terminal inside VS Code → you are now inside the container.
@@ -88,11 +101,13 @@ Place it inside `.devcontainer/Dockerfile`.
 
 ## 📦 How Students Should Use the Environment
 
-1.  Students open **your folder** in VS Code.
+1.  Start Docker
 
-2.  They run **Reopen in Container**.
+2.  Students open **your folder** in VS Code.
 
-3.  Inside the container:
+3.  They run **Reopen in Container**.  .... and wait for the build
+
+4.  Inside the container:
 
         cd /workspace
         
@@ -100,5 +115,4 @@ Place it inside `.devcontainer/Dockerfile`.
 
 ## 🎉 Done!
 
-Your fully reproducible, consistent dev environment is ready for use and
-distribution.
+Your fully reproducible, consistent dev environment is ready for use.

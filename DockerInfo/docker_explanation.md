@@ -1,4 +1,11 @@
-# Docker 
+---
+marp: true
+theme: default
+paginate: true
+title: Docker
+author: Trevor Douglas
+---
+
 
 ## 🐳 What is Docker?
 Docker is a tool that lets you run software in a clean, isolated environment called a **container**.
