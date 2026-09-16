@@ -1,7 +1,7 @@
 # Dev Container Environment Setup & Distribution Guide
 
 This guide explains how to recreate the development container
-environment (Ubuntu + Java + Tools) and how to
+environment (Ubuntu Devel Tools) and how to
 distribute it to students.
 
 ------------------------------------------------------------------------
@@ -14,15 +14,15 @@ distribute it to students.
     │   ├─ devcontainer.json
     │   └─ Dockerfile
     │
-    └─ workspace/      # Students create Flutter, Java, Node, etc. projects here
+    └─ workspace/      # Students create projects here
 
 ------------------------------------------------------------------------
 
 ## ⚙️ devcontainer.json
 
 ``` json
-
-  "name": "SSE-ENSE370-2026",
+{
+  "name": "SSE-ENSE452-2026",
   "dockerFile": "Dockerfile",
 
   // Mount your host folder into the container
@@ -33,16 +33,14 @@ distribute it to students.
   "customizations": {
     "vscode": {
       "extensions": [
-        "redhat.java",
-        "vscjava.vscode-java-pack",
         "ms-vscode.cpptools",
-        "ms-python.python"
+        "ms-vscode.cmake-tools"
       ]
     }
   },
-
-  // Run as root inside container (simpler for installs)
-  "remoteUser": "root",
+  "capAdd": ["SYS_PTRACE"],
+  "securityOpt": ["seccomp=unconfined"]
+}
 
 
 ```
@@ -53,8 +51,7 @@ distribute it to students.
 
 Use the Dockerfile exactly as created earlier, containing:
 
--   Ubuntu 22.04 base
--   OpenJDK 17
+-   Ubuntu 24.04 base
 -   Build essentials & tools
 
 Place it inside `.devcontainer/Dockerfile`.

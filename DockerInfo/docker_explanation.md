@@ -24,7 +24,7 @@ Because everything is packaged together, containers run **exactly the same on ev
 ## 🏗️ How Docker Works (Simple)
 ### **Images**
 A Docker *image* is like a blueprint.  
-It defines everything inside the environment (e.g., Ubuntu, Java, Flutter, Node.js).
+It defines everything inside the environment (e.g., Ubuntu, tool devel).
 
 ### **Containers**
 A container is a *running instance* of an image.  
@@ -34,7 +34,7 @@ Think of an image as a class and a container as an object.
 
 ## 🧪 Example
 Without Docker:
-- Students install different Java versions  
+- Students install different tool versions  
 - SDKs are missing  
 - Dependencies break  
 - Nothing matches  
