@@ -8,7 +8,7 @@ author: Trevor Douglas
 
 # ENSE 452 Lab 
 
-## Fundamentals of Computer Systems Architecture
+## Embedded and Real-Time Software Systems
 
 ### Lab Syllabus
 
