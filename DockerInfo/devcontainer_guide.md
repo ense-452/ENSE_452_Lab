@@ -82,7 +82,7 @@ Place it inside `.devcontainer/Dockerfile`.
 
 8.  Verify tools:
 
-        java -version
+        git --version
         
 ------------------------------------------------------------------------
 
