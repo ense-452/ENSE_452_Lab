@@ -6,7 +6,7 @@ title: Introduction to ARM
 author: Trevor Douglas
 ---
 
-# ENSE 352 Lab 
+# ENSE 452 Lab 
 
 ## Fundamentals of Computer Systems Architecture
 
@@ -22,7 +22,6 @@ trevor.douglas@uregina.ca
 
 -   Labs are due as indicated on URCourses.
 -   Lab grading is out of 100 points.
--   Labs typically will have written quizzes.  30% of lab grade is quiz results.
 -   This lab is integrated into a GitHub Organization and all assignments will be submitted through GitHub. Students are required to sign up for GitHub and join the organization.
 -   Late labs are accepted at a deduction rate of 10% per day.
 -   Ensure that you have access to the lab via your entry card. If it is not working, please see the office staff to program your card for that door.
