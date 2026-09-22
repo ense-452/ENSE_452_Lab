@@ -46,6 +46,7 @@ What possibly is new?
 - Git /GitHub
 - RTOS
 - Real time requirements
+- STM32CubeIDE
 
 ---
 
@@ -62,7 +63,7 @@ Many documents are available on urcourses, under Class Resources in the ARM STMi
 
 ---
 
-## Equipment and Software Requirements}
+## Equipment and Software Requirements
 
 Our target board is the Nucleo-64, and it has a lot of fun peripherals. The brain of this board is a STMicro STM32F103RB microcontroller, with 128 KiB of Flash, and 20 KiB of RAM and a 72MHz clock.
 
@@ -71,6 +72,7 @@ Our target board is the Nucleo-64, and it has a lot of fun peripherals. The brai
 - NOTE ** If you want to use the latest version for Mac or other platforms you must also use STM32CubeMX for code generation.
 - Nucleo-64 development board and USB Serial cable.
 - Git (Git client or use command line).
+- GitHub For online Repository.
 
 ---
 ## HAL
@@ -84,5 +86,4 @@ Our target board is the Nucleo-64, and it has a lot of fun peripherals. The brai
 ## Objective
 
 The objective of this lab is to get you started using the STM32CubeIDE and program the Nucleo-64 board to understand how to develop software for this target. You will also put your project under source control (revision control). First you'll get the LED on the board to blink at a certain rate. As you build your code make sure to commit changes and push to your repository as that is where your code will be evaluated.
-
 
