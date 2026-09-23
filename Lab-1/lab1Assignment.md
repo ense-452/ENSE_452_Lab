@@ -3,7 +3,7 @@
 ## Procedure
 
 ### Accept the assignment
-On URCourses you will find a link to a GitHub classroom assignment.  Accept this assignemnt and make sure you select your User ID from the list provided so you submit under your username.  You must accept this assignment on your assigned lab day.
+Submit all your code to your repository under Lab 1 folder by the due date time.
 
 ### Phase 1
 - Blinky!  (The hello world of embedded)
