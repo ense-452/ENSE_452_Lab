@@ -8,7 +8,7 @@ Submit all your code to your repository under Lab 2 folder by the due date time.
 
 ## Objective
 
-The objective here is to set up a Command-Line Interface (CLI) through which you can communicate with your target board.  Such a tool is extremely useful for unit testing your code, and for automating scripted unit tests.
+The objective here is to set up a Command-Line Interface (CLI) through which you can communicate with your target board.  Such a tool is extremely useful for giving commands, unit testing your code, and for automating scripted unit tests.
 
 First you will be enabling an onboard USART and establishing simple polled serial communication with a terminal program (e.g. Putty, or TeraTerm) running on the host machine.  [If you have a MAC, you can use this link.](https://pbxbook.com/other/mac-tty.html#minicom)
 
@@ -17,7 +17,6 @@ Next, you will design a set of commands and responses such that you can type the
 At each step of the development, we will be paying attention to good software design principles.
 
 ## Procedure
-
 
 
 ### Phase 1: Separation of Student application code
@@ -37,8 +36,6 @@ Given the information in the lab lecture detailing how to separate your code fro
 There are a number of ways to communicate with the board via the serial link.  The first way we will investigate is polling mode.  Investigate the following two HAL functions found in 39.2.1 of the HAL document under Polling mode IO operation:
 
 <details>
-
-
 
 ```C
    HAL_UART_Transmit()
