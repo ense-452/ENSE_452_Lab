@@ -35,14 +35,11 @@ Given the information in the lab lecture detailing how to separate your code fro
 
 There are a number of ways to communicate with the board via the serial link.  The first way we will investigate is polling mode.  Investigate the following two HAL functions found in 39.2.1 of the HAL document under Polling mode IO operation:
 
-<details>
-
 ```C
    HAL_UART_Transmit()
    HAL_UART_Receive()
 
 ```
-</details>
 
 Notice that these two routines are Blocking routines. In other words no other code can run until these routines return.  Investigate these routines and come up with a way to communicate between the target and host in efficient manner.  
 
