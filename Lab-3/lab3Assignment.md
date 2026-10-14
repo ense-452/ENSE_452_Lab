@@ -28,7 +28,7 @@ Previously you implemented a timer to toggle the state of the LED.  Bring that c
 Your command-line interface should provide:
 
 - A status window and a command window created with ANSI escape sequences.
-- A scrolling region within the status window.
+- A scrolling region within the command window.
 - Interrupt-driven USART reception, one character at a time.
 - Character echo and command-line editing.
 - A timer that toggles an LED every two seconds.
