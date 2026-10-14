@@ -155,6 +155,7 @@ HAL_UART_Receive_IT(&huart2,(uint8_t*)RXBuffer,1);
 ```
 ---
 The callback or Interrupt Service Routine
+This can be done in main.c
 
 ```C
 /**
@@ -166,9 +167,19 @@ The callback or Interrupt Service Routine
   */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
+    /* put the code to receive a new character here */
+    /* think how to do this? Put into a buffer etc..*/
+    
+    // Reenable the interrupt 
+    HAL_UART_Receive_IT(&huart2,(uint8_t*)RXBuffer,1);
 
 
 }
 
 ```
+
+---
+## Transmit
+
+Certainly we can do the same with the transmit interrupt.  However, if our design is to echo each character back to our host terminal, we can use the blocking transmit functionality.
 

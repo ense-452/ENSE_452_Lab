@@ -38,7 +38,7 @@ Your command-line interface should provide:
 ### Advised Software Architecture
 Divide the application into three areas of responsibility.
 
-#### USART receive interrupt
+#### USART receive interrupt - Background task (Interrupt driven)
 
 The USART receive-complete callback should:
 
@@ -50,14 +50,14 @@ The USART receive-complete callback should:
 
 Reception must be restarted inside the callback. Otherwise, the program will receive the first character but no later characters.
 
-### Timer interrupt
+### Timer - Background task (Polling)
 
-The timer callback should:
+The timer should:
 
 - Toggle the LED every two seconds.
 - Record that the timer caused the change.
 - Request a status-window update.
-- Return promptly.
+
 
 It should not format strings, transmit USART messages, parse commands, or redraw the terminal.
 
@@ -70,7 +70,6 @@ The main loop should:
 - Update the status window.
 - Perform all terminal output.
 
-This arrangement prevents interrupt callbacks from competing for the USART transmitter.
 
 ## Suggested terminal layout
 
