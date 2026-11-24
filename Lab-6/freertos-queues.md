@@ -57,15 +57,16 @@ if (readings == NULL) {
     /* Handle queue creation failure. Do not start users of this queue. */
 }
 ```
-
+Parameters
 - Capacity: **4 items**.
 - Item size: **one `int32_t`**.
-- Item storage: **16 bytes**, plus queue management overhead.
+- NULL - default attributes.
 
-> **Notes:** Include stdint.h and cmsis_os2.h. NULL selects default queue attributes. These are snippets, not complete firmware. Initialize the kernel with osKernelInitialize(), create the queue and threads, then call osKernelStart(). Check creation results before starting users of the queue. In generated projects, use the existing initialization sequence.
+> **Notes:** Include stdint.h and cmsis_os2.h. Initialize the kernel with osKernelInitialize(), create the queue and threads, then call osKernelStart(). Check creation results before starting users of the queue. In generated projects, use the existing initialization sequence.
+
 > Source: https://arm-software.github.io/CMSIS_6/main/RTOS2/group__CMSIS__RTOS__KernelCtrl.html
 > Source: https://arm-software.github.io/CMSIS_6/main/RTOS2/group__CMSIS__RTOS__Message.html
-> The 16-byte calculation counts payload only, not management overhead or implementation-specific allocation.
+
 
 ## Timeouts use kernel ticks
 
@@ -76,10 +77,6 @@ static uint32_t ms_to_ticks(uint32_t ms) {
                        + 999U) / 1000U);
 }
 ```
-
-- `0`: return immediately.
-- A finite tick count: wait up to that interval.
-- `osWaitForever`: wait without a timeout.
 
 **100 ticks equals 100 ms only when the tick frequency is 1000 Hz.**
 
@@ -102,7 +99,7 @@ if (status != osOK) {
 | --- | --- |
 | `readings` | Destination queue |
 | `&value` | Address of the item to copy |
-| `0U` | Message priority used throughout this lesson |
+| `0U` | Message priority used throughout this lesson (ignored in freeRTOS)|
 | `ms_to_ticks(100)` | Maximum blocking time in kernel ticks |
 
 > **Notes:** A send can return immediately when space is available. CMSIS defines message priorities, but the CMSIS-FreeRTOS adapter ignores msg_prio. Use zero consistently and do not rely on priority sorting with this backend.
@@ -118,11 +115,16 @@ if (osMessageQueueGet(readings, &received, NULL,
     /* Use received here. */
 }
 ```
+| Argument | Meaning |
+| --- | --- |
+| `readings` | Destination queue |
+| `&received` | Address of the item to copy into |
+| `0U` | Message priority used throughout this lesson (ignored in freeRTOS)|
+| `ms_to_ticks(100)` | Maximum blocking time in kernel ticks |
 
-- `NULL` means no message-priority output is needed.
-- The destination must have enough space for one item.
-- Success copies and removes the oldest queued item.
-- Use the received value only after a successful receive.
+when timeout is 0, the function returns instantly (i.e. try semantics).
+when timeout is set to **osWaitForever** the function will wait for an infinite time until the message is retrieved. (i.e. wait semantics).
+all other values specify a time in kernel ticks for a timeout (i.e. timed-wait semantics).
 
 > **Notes:** Source: https://arm-software.github.io/CMSIS_6/main/RTOS2/group__CMSIS__RTOS__Message.html
 
@@ -140,19 +142,6 @@ Successful puts and gets return `osOK`. A blocked thread waits without consuming
 > **Notes:** Answer: repeated polling can waste CPU time. A blocked task allows other ready tasks to run. Once unblocked, scheduling determines when it actually executes.
 > Source: https://arm-software.github.io/CMSIS-FreeRTOS/latest/page_technical_data.html
 
-## Prediction exercise
-
-An empty queue holds **two integers**. Every operation uses zero wait time.
-
-1. Send `10`.
-2. Send `20`.
-3. Send `30`.
-4. Receive one item.
-5. Send `40`.
-
-**Which send fails? What remains in the queue?**
-
-> **Notes:** Answer: sending 30 fails because the queue is full. The receive returns 10. Sending 40 succeeds. The remaining queue is 20, 40, oldest first. osMessageQueuePut does not overwrite an existing item when full.
 
 ## Copying values and pointers
 
@@ -168,8 +157,6 @@ The queued value remains **21**.
 
 A queue of pointers copies the **address**. The application must keep the pointed-to data valid until the receiver finishes using it.
 
-> **Notes:** Ask: What happens if a producer reuses a buffer before the consumer reads it? Answer: the pointer can lead to changed data. A queue protects its own operations, not arbitrary shared buffers.
-> Source: https://www.digikey.com/en/maker/projects/introduction-to-rtos-solution-to-part-5-freertos-queue-example/72d2b361f7b94e0691d947c7c29a03c9
 
 ## Producer and consumer speeds
 
@@ -184,21 +171,14 @@ A larger queue can absorb a temporary burst. Sustained overload still requires a
 
 > **Notes:** Original reasoning exercise. Before the queue fills, backlog grows by about 4 messages per second under these simplified assumptions. Once full, the sender's blocking and failure policy determines what happens. Do not imply a larger queue permanently fixes the throughput mismatch.
 
-## Classroom lab: LED control
+## Previous lab: CLI part 2 architecture
 
-Adapted from the DigiKey companion challenge:
-
-| Task | Responsibility |
-| --- | --- |
-| Serial task | Read a command such as `delay 250` and send the delay |
-| LED task | Receive the delay and update LED timing |
-| LED task | Send a status message after 100 blinks |
-| Serial task | Receive and print the status message |
-
-Use **two `osMessageQueueId_t` queues**, one for each direction.
-
-> **Notes:** Source: https://www.digikey.com/en/maker/projects/introduction-to-rtos-solution-to-part-5-freertos-queue-example/72d2b361f7b94e0691d947c7c29a03c9
-> Clarify the timing convention: if the LED stays on for 250 ms and off for 250 ms, one complete blink takes approximately 500 ms, plus execution overhead. Count one complete on/off cycle as one blink.
+| Component | Responsibility | Suggested starting priority |
+|---|---|---|
+| UART receive callback | Queue the received character and rearm reception | Interrupt priority compatible with RTOS calls |
+| CLI task | Build command lines, handle backspace, validate and dispatch commands | `osPriorityNormal` |
+| Terminal task | Own UART transmission, echo text, and render ANSI screen updates | `osPriorityNormal` |
+| LED task, if included | Apply blink commands and maintain LED timing | `osPriorityAboveNormal` |
 
 ## Lab design decisions
 
@@ -211,8 +191,6 @@ Before coding, agree on:
 
 **Test cases:** a valid command, invalid input, rapid commands, and a full status queue.
 
-> **Notes:** Suggested teaching choices: use a uint32_t delay and a status struct containing a blink count. Validate the delay before converting it to ticks. Avoid zero-tick delays. Keep the serial task responsive to both input and status messages. Do not let the LED task wait forever for a new command when it should continue blinking. Create threads with osThreadNew(). Use osMessageQueuePut()/osMessageQueueGet() for messages and osDelay(ms_to_ticks(delay_ms)) for LED waits. Poll for new LED commands with timeout zero between blink phases. osDelay takes ticks and is a thread-context call. These are extensions for classroom discussion, not claims about the video's exact implementation.
-
 ## Common mistakes
 
 | Mistake | Better practice |
@@ -222,25 +200,3 @@ Before coding, agree on:
 | Milliseconds passed as ticks | Convert using `osKernelGetTickFreq()` |
 | Pointer to expired data | Define data lifetime and ownership |
 | Blocking inside an interrupt | Put/Get must use timeout `0` |
-
-> **Notes:** Source: https://arm-software.github.io/CMSIS_6/main/RTOS2/group__CMSIS__RTOS__Message.html
-> CMSIS-RTOS2 uses the same osMessageQueuePut/Get names in threads and interrupts. The adapter selects the backend operation. In an ISR, timeout must be zero and the interrupt priority must be allowed to call the RTOS. Do not create queues in an ISR. Keep the lab in thread context.
-
-## Exit ticket
-
-1. What does FIFO mean for our priority-zero messages?
-2. What happens when a zero-wait send finds a full queue?
-3. Why does changing the original integer leave its queued copy unchanged?
-4. Why does the LED lab use two queues?
-
-> **Notes:** Answers: 1. Items are received in their enqueue order. 2. The call fails immediately and adds no item. 3. The queue copied the integer's bytes when the send succeeded. 4. Commands and status messages travel in opposite directions with separate consumers.
-
-## Sources and further practice
-
-- [Original video: Introduction to RTOS Part 5 – Queue](https://www.youtube.com/watch?v=pHJ3lxOoWeI)
-- [Shawn Hymel / DigiKey: companion explanation and challenge](https://www.digikey.com/en/maker/projects/introduction-to-rtos-solution-to-part-5-freertos-queue-example/72d2b361f7b94e0691d947c7c29a03c9)
-- [CMSIS-RTOS2 kernel initialization and tick frequency](https://arm-software.github.io/CMSIS_6/main/RTOS2/group__CMSIS__RTOS__KernelCtrl.html)
-- [CMSIS-RTOS2 message queue API](https://arm-software.github.io/CMSIS_6/main/RTOS2/group__CMSIS__RTOS__Message.html)
-- [CMSIS-FreeRTOS adapter behaviour](https://arm-software.github.io/CMSIS-FreeRTOS/latest/page_technical_data.html)
-
-**Extension:** Explain how your design should change if only the newest sensor reading matters.
