@@ -180,8 +180,10 @@ A larger queue can absorb a temporary burst. Sustained overload still requires a
 | Terminal task | Own UART transmission, echo text, and render ANSI screen updates | `osPriorityNormal` |
 | LED task, if included | Apply blink commands and maintain LED timing | `osPriorityAboveNormal` |
 
-## Lab design decisions
+### Character send sequence digram
+![Character send sequence diagram](character-send-sequence.png)
 
+## Lab design decisions
 Before coding, agree on:
 
 - The data type carried by each queue.
